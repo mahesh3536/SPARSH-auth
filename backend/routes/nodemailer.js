@@ -8,6 +8,7 @@ app.use(express.urlencoded())
 
 const transporter  =  nodemailer.createTransport( {
     service : "hotmail",
+    port: 587,
     auth : {
         user : "nodetest-5ACE85C5-3-DAC0F69-@outlook.com",
         pass : "znd,vzjmdi490m<*#&@#^%sod"
