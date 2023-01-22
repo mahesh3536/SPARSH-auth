@@ -22,10 +22,12 @@ const options = {
     text : "You are successfully logged in"
 }
 
-const sendMail = (userData) => {
+const sendMail = (userData, event) => {
     console.log(userData.email)
     
     options.to = 'pradipvala400@gmail.com';
+
+    options.text = `You are successfully registered for ${event} event.`
 
     transporter.sendMail(options , function (err , info) {
         if(err){

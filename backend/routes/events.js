@@ -83,7 +83,7 @@ router.post("/register", async (req, res) => {
             await updateDoc(doc(db, "events", eventID), { users: arrayUnion(userDocRef.id) });
             console.log("User created with id: ", userDocRef.id);
 
-            res.status(200).json({ succes: true, message: "User registered", id: userDocRef.id });
+            res.status(200).json({ succes: true, message: "User registered", id: userDocRef.id, registeredID: registeredID + 1});
 
             mailer.sendMail(user)
         } else {
