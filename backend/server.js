@@ -3,20 +3,20 @@ const cors = require("cors");
 const protect = require("./middleware/protect");
 const app = express();
 app.use(cors());
+app.use(express.json());
 const PORT = 5000;
 
-// app.use(protect.decodeToken);
+app.use(protect.decodeToken);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.post('/sendMail' , (req , res) => {
-
-  console.log('hello')
-  res.send('hello')
+app.post("/sendMail", (req, res) => {
+  console.log("hello");
+  res.send("hello");
   // console.log(req.body.email)
-  
+
   // options.to = req.body.email;
 
   // transporter.sendMail(options , function (err , info) {
@@ -29,9 +29,10 @@ app.post('/sendMail' , (req , res) => {
   //         res.status(200).send("OK")
   //     }
   // })
-})
+});
 
-app.use('/api', require('./routes/index'));
+const events = require("./routes/events");
+app.use("/api/events", events);
 
 app.listen(PORT, () => {
   console.log("Server is running");
