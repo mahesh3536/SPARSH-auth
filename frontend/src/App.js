@@ -7,9 +7,10 @@ function App() {
   const { user, login, loading, logout, token } = useAuth();
 
   const registerLogin = async (event) => {
+    console.log(process.env.REACT_APP_BACKENDURL)
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/events/register",
+        `${process.env.REACT_APP_BACKENDURL}api/events/register`,
         {
           user: user,
           event: event,
