@@ -6,13 +6,13 @@ import axios from "axios";
 function App() {
   const { user, login, loading, logout, token } = useAuth();
 
-  const registerLogin = async () => {
+  const registerLogin = async (event) => {
     try {
       const res = await axios.post(
         "http://localhost:5000/api/events/register",
         {
           user: user,
-          event: "singing",
+          event: event,
         },
         {
           headers: {
@@ -32,7 +32,14 @@ function App() {
       {!user && <button onClick={login}>Sign in with google</button>}
       {user && <button onClick={logout}>Logout</button>}
       {user && (
-        <button onClick={registerLogin}>register for singing event</button>
+        <>
+          <button onClick={() => registerLogin("singing")}>
+            register for singing event
+          </button>
+          <button onClick={() => registerLogin("dancing")}>
+            register for dancing event
+          </button>
+        </>
       )}
     </div>
   );

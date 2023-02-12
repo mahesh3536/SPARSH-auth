@@ -35,7 +35,6 @@ export const AuthProvider = ({ children }) => {
       if (user) {
         setUser(user);
         user.getIdToken().then((token) => setToken(token));
-        console.log(user);
         setLoading(false);
       } else {
         setUser(null);
@@ -70,7 +69,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async () => {
-    console.log("Hello");
     await signInWithPopup(auth, googleAuth)
       .then((userCredential) => {
         setUser(userCredential.user);

@@ -1,42 +1,33 @@
-const express = require("express")
-const nodemailer = require("nodemailer")
-const app = express()
-const router = express.Router()
+const nodemailer = require("nodemailer");
 
-app.use(express.json())
-app.use(express.urlencoded())
-
-const transporter  =  nodemailer.createTransport( {
-    service : "hotmail",
-    port: 587,
-    auth : {
-        user : "nodetest-5ACE85C5-3-DAC0F69-@outlook.com",
-        pass : "znd,vzjmdi490m<*#&@#^%sod"
-    }
-})
-
-const options = {
-    from : "nodetest-5ACE85C5-3-DAC0F69-@outlook.com",
-    to : "pradipvala400@gmail.com",
-    subject : "SUCCESSFULLY LOGGIN",
-    text : "You are successfully logged in"
-}
+// let testAccount = await nodemailer.createTestAccount();
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "webhunters4@gmail.com",
+    pass: "uhqsfcehjgqqdpke",
+  },
+});
 
 const sendMail = (userData, event) => {
-    console.log(userData.email)
-    
-    options.to = 'pradipvala400@gmail.com';
+  console.log(userData.email);
+  console.log(event);
+  const options = {
+    from: "webhunters4@gmail.com",
+    to: userData.email,
+    subject: "Successfully Registered for the event",
+    text: `You are successfully registered for ${event.name} event.`,
+  };
 
-    options.text = `You are successfully registered for ${event} event.`
+  //   options.text = `You are successfully registered for ${event} event.`;
 
-    transporter.sendMail(options , function (err , info) {
-        if(err){
-            console.log(err)
-        }
-        else {
-            console.log("Send : "  , info.response)
-        }
-    })
-}
+  transporter.sendMail(options, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: %s", info.messageId);
+    }
+  });
+};
 
-module.exports = { sendMail }
+module.exports = { sendMail };
