@@ -1,10 +1,10 @@
+require("dotenv").config()
 const express = require("express");
 const cors = require("cors");
 const protect = require("./middleware/protect");
 const app = express();
 app.use(cors());
 app.use(express.json());
-const PORT = 5000;
 
 app.use(protect.decodeToken);
 
@@ -34,6 +34,6 @@ app.post("/sendMail", (req, res) => {
 const events = require("./routes/events");
 app.use("/api/events", events);
 
-app.listen(PORT, () => {
-  console.log("Server is running");
+app.listen(process.env.PORT, () => {
+  console.log("Server is running on", process.env.PORT);
 });
