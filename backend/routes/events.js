@@ -44,7 +44,7 @@ router.post("/register", async (req, res) => {
       if (item === user.uid) {
         return res
           .status(200)
-          .send({ message: "Already registered for the event" });
+          .send({ message: "Already registered for the event", user: user, });
       }
     }
 
@@ -64,10 +64,10 @@ router.post("/register", async (req, res) => {
     mailer.sendMail(user, data);
     return res
       .status(201)
-      .send({ message: "Successfully Registered for the event" });
+      .send({ message: "Successfully Registered for the event", user: user });
   } catch (err) {
     console.log(err);
-    return res.status(500).send({ message: "Internal Server Error" });
+    return res.status(500).send({ message: "Internal Server Error", user: user });
   }
 });
 
@@ -76,6 +76,7 @@ router.get("/:name", async (req, res) => {
   try {
     let registeredUsers = [];
     const eventsRef = collection(db, "events");
+    const userRef = collection(db, "userInfo");
     const qEvent = query(
       eventsRef,
       where("name", "==", req.params.name?.toLowerCase())
@@ -92,8 +93,22 @@ router.get("/:name", async (req, res) => {
         registeredUsers.push(doc.data());
       });
     }
+
+    const qUser = query(userRef, where("uid", "in", registeredUsers[0].users));
+    const userQuerySnapshot = await getDocs(qUser);
+    const users = []
+    if(userQuerySnapshot.empty){
+      return res.status(404).json({
+        status: "No users registered for this event",
+      });
+    } else {
+      userQuerySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        users.push(doc.data());
+      });
+    }
     return res.status(200).json({
-      data: registeredUsers,
+      data: users,
     });
   } catch (e) {
     return res.status(500).json({
