@@ -84,7 +84,7 @@ function App() {
           data && <>
             <h1>Registered Users For Event {event}</h1>
             {
-              data.map((item) => <p>{item.name}</p>)
+              data.map((item) => <p>{item?.name}</p>)
             }
           </>
         }

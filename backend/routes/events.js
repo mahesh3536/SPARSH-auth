@@ -93,20 +93,22 @@ router.get("/:name", async (req, res) => {
         registeredUsers.push(doc.data());
       });
     }
-
-    const qUser = query(userRef, where("uid", "in", registeredUsers[0].users));
-    const userQuerySnapshot = await getDocs(qUser);
+    const userIds = registeredUsers[0].users;
+    // const qUser = query(userRef, where("uid", "in", registeredUsers[0].users));
     const users = []
-    if(userQuerySnapshot.empty){
+    await Promise.all(
+       userIds.map(async (id) => {  
+        const userDoc = await getDoc(doc(db, "userInfo", id));
+        if(userDoc.exists()){
+          users.push(userDoc.data())
+        }  
+      })
+    )
+    if(userIds.length === 0){
       return res.status(404).json({
         status: "No users registered for this event",
       });
-    } else {
-      userQuerySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        users.push(doc.data());
-      });
-    }
+    } 
     return res.status(200).json({
       data: users,
     });
