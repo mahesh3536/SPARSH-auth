@@ -3,6 +3,7 @@ const router = require("express").Router();
 const { db } = require("../config/firebase");
 const {
   collection,
+  deleteDoc,
   addDoc,
   query,
   where,
@@ -14,6 +15,53 @@ const {
   getDocs,
 } = require("firebase/firestore");
 const mailer = require("./nodemailer");
+
+router.post("/add", async (req, res) => {
+  let { name, imgurl, date, venue, description, rulebookurl } = req.body;
+  let eventObj = { name, imgurl, date, venue, description, rulebookurl };
+  console.log(eventObj)
+
+  let q = query(collection(db, "events"), where("name", "==", name));
+  let querySS = await getDocs(q);
+  if (querySS.empty) {
+      const eventDocRef = await addDoc(collection(db, "events"), { ...eventObj, createdAt: serverTimestamp() });
+      console.log("Event created with id: ", eventDocRef.id);
+      res.json({ success: true, message: "Event created", id: eventDocRef.id });
+  } else {
+      console.log("Event already exists");
+      res.json({ success: false, message: "Event already exists" });
+  }
+});
+
+router.post("/update", async (req, res) => {
+  let { name, imgurl, date, venue, description, rulebookurl } = req.body;
+  let eventObj = { name, imgurl, venue, date, description, rulebookurl };
+
+  let q = query(collection(db, "events"), where("name", "==", name));
+  let querySS = await getDocs(q);
+  if (querySS.empty) {
+      res.json({ success: false, message: "Event does not exists" });
+  } else {
+      let eventRef = querySS.docs[0].id;
+      console.log(eventRef);
+      await updateDoc(doc(db, "events", eventRef),eventObj);
+      res.json({ success: true, message: "Event updated successfully", id: eventRef });
+  }
+});
+
+router.post("/delete", async (req, res) => {
+  let { name } = req.body;
+  let q = query(collection(db, "events"), where("name", "==", name));
+  let querySS = await getDocs(q);
+
+  if (querySS.empty) {
+      res.json({ success: false, message: "Event does not exists" });
+  } else {
+      let eventRef = querySS.docs[0].id;
+      await deleteDoc(doc(db, "events", eventRef));
+      res.json({ success: true, message: "Event deleted successfully", id: eventRef });
+  }
+});
 
 router.post("/register", async (req, res) => {
   const { user, event } = req.body;
