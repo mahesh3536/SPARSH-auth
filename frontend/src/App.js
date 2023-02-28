@@ -4,10 +4,10 @@ import useAuth from "./hooks/useAuth";
 import axios from "axios";
 
 function App() {
-  const { user, login, loading, logout, token } = useAuth();
+  const { user, login, emailLogin, loading, logout, token } = useAuth();
   const [data, setData] = useState(null)
   const [event, setEvent] = useState(null)
-  console.log(data);
+
   const showEvent = (event) => {
     if(event) {
       const getRegisteredUsers = async () => {
@@ -57,9 +57,28 @@ function App() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    emailLogin(e.target[0].value, e.target[1].value);
+  }
+
   return (
     <div className="App">
       <div className="buttonRow">
+        <form onSubmit={handleSubmit}>
+          <label>
+          Username: 
+          <input type="email" />
+          </label>
+          <br />
+          <label>
+            Password: 
+            <input type="password" />
+          </label>
+          <label>
+            <button type="submit">Submit</button>
+          </label>
+        </form>
       {!user && <button onClick={login}>Sign in with google</button>}
       {user && <button onClick={logout}>Logout</button>}
       {user && (
