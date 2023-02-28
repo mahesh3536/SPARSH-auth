@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(protect.decodeToken);
+// app.use(protect.decodeToken);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -32,7 +32,9 @@ app.post("/sendMail", (req, res) => {
 });
 
 const events = require("./routes/events");
+const campus_ambassador = require("./routes/campus_ambassador")
 app.use("/api/events", events);
+app.use("/api/campus_ambassador" , campus_ambassador);
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running on", process.env.PORT);
