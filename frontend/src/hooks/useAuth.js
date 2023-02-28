@@ -4,6 +4,10 @@ import {
   signInWithPopup,
   signOut,
   User,
+  createUserWithEmailAndPassword,
+  sendSignInLinkToEmail,
+  signInWithEmailAndPassword,
+  sendEmailVerification
 } from "firebase/auth";
 import {
   collection,
@@ -47,12 +51,15 @@ export const AuthProvider = ({ children }) => {
   const createUser = async (user) => {
     try {
       const colRef = collection(db, "userInfo");
+      let email = user.email || "";
+      let check = email.endsWith("svnit.ac.in");
       const resource = {
         uid: user.uid,
         name: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
         createdAt: serverTimestamp(),
+        isSvnitian: check,
       };
 
       const q = query(colRef, where("uid", "==", user.uid));
@@ -75,10 +82,65 @@ export const AuthProvider = ({ children }) => {
         createUser(userCredential.user);
         console.log(userCredential.user);
         setLoading(false);
+        console.log(userCredential.user);
       })
       .catch((err) => (setError(err.message), alert(err.message)))
       .finally(() => setLoading(false));
   };
+  
+  const emailLogin = async (email, password) => {
+    const colRef = collection(db, "userInfo");
+    const q = query(colRef, where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      let docs = [];
+      querySnapshot.forEach((doc) => {
+        docs.push(doc.data());
+      });
+
+      let check = false;
+      if (docs.length) check = true;
+    if (check) {
+      await signinWithEmail(email, password);
+    } else {
+      await createUserWithEmail(email, password);
+    }
+  }
+
+  const signinWithEmail = async (email, password) => {
+      signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      console.log(user);
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode)
+      console.log(errorMessage)
+    });
+
+  }
+
+  const createUserWithEmail = async (email, password) => {
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      createUser(user);
+      sendEmailVerification(user);
+      // ...
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // ..
+      console.log(errorCode)
+      console.log(errorMessage)
+    });
+
+  }
 
   const logout = async () => {
     setLoading(true);
@@ -92,6 +154,7 @@ export const AuthProvider = ({ children }) => {
     () => ({
       user,
       login,
+      emailLogin,
       error,
       loading,
       logout,
