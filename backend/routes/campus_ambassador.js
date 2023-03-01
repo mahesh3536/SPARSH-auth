@@ -30,6 +30,11 @@ const metadata = {
 };
 
 
+router.get('/' , (req , res) => {
+    fs.readFile(__dirname + '/../html/form1.html', 'utf8', function(err, text){
+        res.send(text);
+    });
+})
 
 router.post("/register", async (req, res) => {
 
@@ -86,8 +91,9 @@ router.post("/register", async (req, res) => {
 
     await addDoc(ce_collection, data);
 
-
-    res.status(201).send("OK");
+    fs.readFile(__dirname + '/../html/form1.html', 'utf8', function(err, text){
+        res.send(text);
+    });
 
 });
 
