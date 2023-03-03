@@ -7,7 +7,8 @@ import {
   createUserWithEmailAndPassword,
   sendSignInLinkToEmail,
   signInWithEmailAndPassword,
-  sendEmailVerification
+  sendEmailVerification,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import {
   collection,
@@ -70,6 +71,7 @@ export const AuthProvider = ({ children }) => {
       });
       if (docs.length) return;
       await setDoc(doc(colRef, user.uid), resource);
+      window.location.href = "/user-info";
     } catch (err) {
       console.log(err);
     }
@@ -87,60 +89,61 @@ export const AuthProvider = ({ children }) => {
       .catch((err) => (setError(err.message), alert(err.message)))
       .finally(() => setLoading(false));
   };
-  
+
   const emailLogin = async (email, password) => {
     const colRef = collection(db, "userInfo");
     const q = query(colRef, where("email", "==", email));
-      const querySnapshot = await getDocs(q);
-      let docs = [];
-      querySnapshot.forEach((doc) => {
-        docs.push(doc.data());
-      });
+    const querySnapshot = await getDocs(q);
+    let docs = [];
+    querySnapshot.forEach((doc) => {
+      docs.push(doc.data());
+    });
 
-      let check = false;
-      if (docs.length) check = true;
+    let check = false;
+    if (docs.length) check = true;
     if (check) {
       await signinWithEmail(email, password);
     } else {
       await createUserWithEmail(email, password);
     }
-  }
+  };
 
   const signinWithEmail = async (email, password) => {
-      signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in 
-      const user = userCredential.user;
-      console.log(user);
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorCode)
-      console.log(errorMessage)
-    });
-
-  }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode);
+        console.log(errorMessage);
+      });
+  };
 
   const createUserWithEmail = async (email, password) => {
     createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed in 
-      const user = userCredential.user;
-      createUser(user);
-      sendEmailVerification(user);
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
-      console.log(errorCode)
-      console.log(errorMessage)
-    });
-
-  }
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        createUser(user).then(() => {
+          sendEmailVerification(user).then(() => {
+            window.location.href = "/user-info";
+          });
+        });
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+        console.log(errorCode);
+        console.log(errorMessage);
+      });
+  };
 
   const logout = async () => {
     setLoading(true);
@@ -148,6 +151,11 @@ export const AuthProvider = ({ children }) => {
       .then(() => setUser(null))
       .catch((err) => (setError(err.message), alert(err.message)))
       .finally(() => setLoading(false));
+  };
+
+  const resetPassword = async (email) => {
+    console.log(email);
+    sendPasswordResetEmail(auth, email);
   };
 
   const memoedValue = useMemo(
@@ -158,6 +166,7 @@ export const AuthProvider = ({ children }) => {
       error,
       loading,
       logout,
+      resetPassword,
       token,
     }),
     [user, loading]

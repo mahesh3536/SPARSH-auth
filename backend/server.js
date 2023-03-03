@@ -1,10 +1,10 @@
-require("dotenv").config()
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const protect = require("./middleware/protect");
 const app = express();
 app.use(cors());
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // app.use(protect.decodeToken);
@@ -33,9 +33,11 @@ app.post("/sendMail", (req, res) => {
 });
 
 const events = require("./routes/events");
-const campus_ambassador = require("./routes/campus_ambassador")
+const campus_ambassador = require("./routes/campus_ambassador");
+const user_info = require("./routes/user_info");
 app.use("/api/events", events);
-app.use("/api/campus_ambassador" , campus_ambassador);
+app.use("/api/campus_ambassador", campus_ambassador);
+app.use("/api/userinfo", user_info);
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running on", process.env.PORT);
