@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const protect = require("./middleware/protect");
 const app = express();
-app.use(cors());
+// app.use(cors());
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "https://sparshsvnit.in");
