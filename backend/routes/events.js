@@ -150,6 +150,10 @@ router.post("/register", async (req, res) => {
     const userRef = collection(db, "userInfo");
     const eventsRef = collection(db, "events");
 
+    if(!user || !event) {
+        return res.status(500).json({ success: false, message: "provide user and event" });
+    }
+
     try {
         // check if event is created or not
         // const qEvent = query(eventsRef, where("name", "==", event.toLowerCase()));
