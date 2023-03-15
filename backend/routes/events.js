@@ -27,7 +27,7 @@ const upload = multer({ dest: "uploads/" });
 const metadata = {
     contentType: "image/jpeg",
 };
-router.use(formidable());
+// router.use(formidable());
 
 // FOR REFERENCE
 // evetSchema = {
@@ -47,106 +47,9 @@ router.get("/delete", (req, res) => {
     res.sendFile(path.join(__dirname, "..", "events", "delete.html"));
 });
 
-router.get("/:name/details", async (req, res) => {
-    // let q = query(collection(db, "events"), where("name", "==", req.params.name));
-    // let querySS = await getDocs(q);
-    let docSnap = await getDoc(doc(db, "events", req.params.name));
-    if (!docSnap.exists()) {
-        res.json({ success: false, message: "Event does not exist" });
-    } else {
-        let eventDetails = docSnap.data();
-        res.json({ success: true, details: eventDetails });
-    }
-});
-
-router.post("/add", async (req, res) => {
-    const imageUpload = async (folder, buffer, metadata) => {
-        return new Promise((resolve, reject) => {
-            uploadBytes(folder, buffer, metadata).then((snapshot) => {
-                getDownloadURL(snapshot.ref).then((url) => {
-                    resolve(url);
-                });
-            });
-        });
-    };
-    let { name, date, venue, description } = req.fields;
-    let { imgurl, rulebookurl } = req.files;
-
-    const data1 = fs.readFileSync(imgurl.path, (err, data) => {
-        if (err) console.log(err);
-    });
-    const data2 = fs.readFileSync(rulebookurl.path, (err, data) => {
-        if (err) console.log(err);
-    });
-    const imageRefStorage = ref(storage, `events/images/${name}`);
-    const rulebookRefStorage = ref(storage, `events/rulebooks/${name}`);
-
-    const imgURL = await imageUpload(imageRefStorage, data1, { contentType: "image/jpeg" });
-    const rulebookURL = await imageUpload(rulebookRefStorage, data2, { contentType: "application/pdf" });
-
-    console.log(req.body);
-    let eventObj = { name, venue, date, description, imgURL, rulebookURL };
-    console.log(eventObj);
-
-    // let q = query(collection(db, "events"), where("name", "==", name));
-    // let querySS = await getDocs(q);
-    let docSnap = await getDoc(doc(db, "events", name));
-    if (!docSnap.exists()) {
-        await setDoc(doc(db, "events", name), { ...eventObj, createdAt: serverTimestamp() });
-        // const eventDocRef = await addDoc(collection(db, "events"), { ...eventObj, createdAt: serverTimestamp() });
-        console.log("Event created with id: ", name);
-        res.json({ success: true, message: "Event created", id: name });
-    } else {
-        console.log("Event already exists");
-        res.json({ success: false, message: "Event already exists" });
-    }
-});
-
-router.post("/update", async (req, res) => {
-    console.log(req.body);
-    let { name, imgurl, date, venue, description, rulebookurl } = req.body;
-    let eventObj = {};
-    if (name && name != "") eventObj.name = name;
-    if (imgurl && imgurl != "") eventObj.imgurl = imgurl;
-    if (date && date != "") eventObj.date = date;
-    if (venue && venue != "") eventObj.venue = venue;
-    if (description && description != "") eventObj.description = description;
-    if (rulebookurl && rulebookurl != "") eventObj.rulebookurl = rulebookurl;
-
-    // let q = query(collection(db, "events"), where("name", "==", name));
-    // let querySS = await getDocs(q);
-    let docSnap = await getDoc(doc(db, "events", name));
-
-    if (!docSnap.exists()) {
-        res.json({ success: false, message: "Event does not exists" });
-    } else {
-        await updateDoc(doc(db, "events", name), eventObj);
-        res.json({ success: true, message: "Event updated successfully", id: name });
-    }
-});
-
-router.post("/delete", async (req, res) => {
-    console.log("delete");
-    let { name } = req.body;
-    console.log(name);
-    const imageRefStorage = ref(storage, `events/images/${name}`);
-    const rulebookRefStorage = ref(storage, `events/rulebooks/${name}`);
-    // let q = query(collection(db, "events"), where("name", "==", name));
-    // let querySS = await getDocs(q);
-    let docSnap = await getDoc(doc(db, "events", name));
-
-    if (!docSnap.exists()) {
-        res.json({ success: false, message: "Event does not exists" });
-    } else {
-        await deleteDoc(doc(db, "events", name));
-        await deleteObject(imageRefStorage);
-        await deleteObject(rulebookRefStorage);
-        res.json({ success: true, message: "Event deleted successfully", id: name });
-    }
-});
-
 router.post("/register", async (req, res) => {
     const { user, event } = req.body;
+    console.log(user, event);
     const userRef = collection(db, "userInfo");
     const eventsRef = collection(db, "events");
 
@@ -200,6 +103,106 @@ router.post("/register", async (req, res) => {
     }
 });
 
+
+
+router.post("/add",router.use(formidable()), async (req, res) => {
+    const imageUpload = async (folder, buffer, metadata) => {
+        return new Promise((resolve, reject) => {
+            uploadBytes(folder, buffer, metadata).then((snapshot) => {
+                getDownloadURL(snapshot.ref).then((url) => {
+                    resolve(url);
+                });
+            });
+        });
+    };
+    let { name, date, venue, description } = req.fields;
+    let { imgurl, rulebookurl } = req.files;
+    
+    const data1 = fs.readFileSync(imgurl.path, (err, data) => {
+        if (err) console.log(err);
+    });
+    const data2 = fs.readFileSync(rulebookurl.path, (err, data) => {
+        if (err) console.log(err);
+    });
+    const imageRefStorage = ref(storage, `events/images/${name}`);
+    const rulebookRefStorage = ref(storage, `events/rulebooks/${name}`);
+    
+    const imgURL = await imageUpload(imageRefStorage, data1, { contentType: "image/jpeg" });
+    const rulebookURL = await imageUpload(rulebookRefStorage, data2, { contentType: "application/pdf" });
+    
+    console.log(req.body);
+    let eventObj = { name, venue, date, description, imgURL, rulebookURL };
+    console.log(eventObj);
+    
+    // let q = query(collection(db, "events"), where("name", "==", name));
+    // let querySS = await getDocs(q);
+    let docSnap = await getDoc(doc(db, "events", name));
+    if (!docSnap.exists()) {
+        await setDoc(doc(db, "events", name), { ...eventObj, createdAt: serverTimestamp() });
+        // const eventDocRef = await addDoc(collection(db, "events"), { ...eventObj, createdAt: serverTimestamp() });
+        console.log("Event created with id: ", name);
+        res.json({ success: true, message: "Event created", id: name });
+    } else {
+        console.log("Event already exists");
+        res.json({ success: false, message: "Event already exists" });
+    }
+});
+
+router.post("/update", async (req, res) => {
+    console.log(req.body);
+    let { name, imgurl, date, venue, description, rulebookurl } = req.body;
+    let eventObj = {};
+    if (name && name != "") eventObj.name = name;
+    if (imgurl && imgurl != "") eventObj.imgurl = imgurl;
+    if (date && date != "") eventObj.date = date;
+    if (venue && venue != "") eventObj.venue = venue;
+    if (description && description != "") eventObj.description = description;
+    if (rulebookurl && rulebookurl != "") eventObj.rulebookurl = rulebookurl;
+    
+    // let q = query(collection(db, "events"), where("name", "==", name));
+    // let querySS = await getDocs(q);
+    let docSnap = await getDoc(doc(db, "events", name));
+    
+    if (!docSnap.exists()) {
+        res.json({ success: false, message: "Event does not exists" });
+    } else {
+        await updateDoc(doc(db, "events", name), eventObj);
+        res.json({ success: true, message: "Event updated successfully", id: name });
+    }
+});
+
+router.post("/delete", async (req, res) => {
+    console.log("delete");
+    let { name } = req.body;
+    console.log(name);
+    const imageRefStorage = ref(storage, `events/images/${name}`);
+    const rulebookRefStorage = ref(storage, `events/rulebooks/${name}`);
+    // let q = query(collection(db, "events"), where("name", "==", name));
+    // let querySS = await getDocs(q);
+    let docSnap = await getDoc(doc(db, "events", name));
+    
+    if (!docSnap.exists()) {
+        res.json({ success: false, message: "Event does not exists" });
+    } else {
+        await deleteDoc(doc(db, "events", name));
+        await deleteObject(imageRefStorage);
+        await deleteObject(rulebookRefStorage);
+        res.json({ success: true, message: "Event deleted successfully", id: name });
+    }
+});
+
+
+router.get("/:name/details", async (req, res) => {
+    // let q = query(collection(db, "events"), where("name", "==", req.params.name));
+    // let querySS = await getDocs(q);
+    let docSnap = await getDoc(doc(db, "events", req.params.name));
+    if (!docSnap.exists()) {
+        res.json({ success: false, message: "Event does not exist" });
+    } else {
+        let eventDetails = docSnap.data();
+        res.json({ success: true, details: eventDetails });
+    }
+});
 // this route will return the user id of all the users registered for the event
 router.get("/:name", async (req, res) => {
     try {
@@ -208,7 +211,7 @@ router.get("/:name", async (req, res) => {
         const userRef = collection(db, "userInfo");
         const qEvent = query(eventsRef, where("name", "==", req.params.name?.toLowerCase()));
         const querySnapshot = await getDocs(qEvent);
-
+        
         if (querySnapshot.empty) {
             return res.status(404).json({
                 status: "This event does not exist",
