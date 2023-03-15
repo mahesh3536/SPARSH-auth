@@ -30,6 +30,11 @@ const metadata = {
 };
 
 
+router.get('/' , (req , res) => {
+    fs.readFile(__dirname + '/../html/form1.html', 'utf8', function(err, text){
+        res.send(text);
+    });
+})
 
 router.post("/register", async (req, res) => {
 
@@ -63,31 +68,33 @@ router.post("/register", async (req, res) => {
     College_ID_cardURL = await imageUpload(imageRefcoId, data2);
 
     const data = {
-        "name": name,
-        "contact_info": contact_info,
-        "email": email,
+        "name": name ? name : "Not Provided",
+        "contact_info": contact_info ? contact_info : "Not Provided",
+        "email": email ? email : "Not Provided",
         "Academics": {
-            "institute_name": institute_name,
-            "course": course,
-            "year": year,
-            "department": department,
+            "institute_name": institute_name ? institute_name : "Not Provided",
+            "course": course ? course : "Not Provided",
+            "year": year ? year : "Not Provided",
+            "department": department ? department : "Not Provided",
         },
 
         "Social_media": {
-            "linkedIn": LinkedIn,
-            "instagram": instagram,
-            "Facebook": Facebook,
+            "linkedIn": LinkedIn ? LinkedIn : "Not Provided",
+            "instagram": instagram ? instagram : "Not Provided",
+            "Facebook": Facebook ? Facebook : "Not Provided",
         },
-        "Aadhar_cardURL": Aadhar_cardURL,
-        "College_ID_cardURL": College_ID_cardURL,
-        "Why_do_you_want_to_be_campus_ambassadors": Why_do_you_want_to_be_campus_ambassadors,
+        "Aadhar_cardURL": Aadhar_cardURL ? Aadhar_cardURL : "Not Provided",
+        "College_ID_cardURL": College_ID_cardURL ? College_ID_cardURL : "Not Provided",
+        "Why_do_you_want_to_be_campus_ambassadors": Why_do_you_want_to_be_campus_ambassadors ? Why_do_you_want_to_be_campus_ambassadors : "Not Provided",
     }
     const ce_collection = collection(db, "campusAmbassador");
 
     await addDoc(ce_collection, data);
 
-
-    res.status(201).send("OK");
+    fs.readFile(__dirname + '/../html/form1.html', 'utf8', function(err, text){
+        console.log('confirm');
+        res.send(text);
+    });
 
 });
 

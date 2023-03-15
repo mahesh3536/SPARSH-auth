@@ -2,16 +2,20 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import useAuth from "./hooks/useAuth";
 import axios from "axios";
+import { Route, Routes } from "react-router-dom";
+import ResetPassword from "./ResetPassword";
+import UserInfo from "./UserInfo";
 
 function App() {
-  const { user, login, emailLogin, loading, logout, token } = useAuth();
-  const [data, setData] = useState(null)
-  const [event, setEvent] = useState(null)
+  const { user, login, emailLogin, loading, logout, resetPassword, token } =
+    useAuth();
+  const [data, setData] = useState(null);
+  const [event, setEvent] = useState(null);
 
   const showEvent = (event) => {
-    if(event) {
+    if (event) {
       const getRegisteredUsers = async () => {
-        console.log(event)
+        console.log(event);
         try {
           const res = await axios.get(
             `${process.env.REACT_APP_BACKENDURL}api/events/${event}`,
@@ -21,22 +25,20 @@ function App() {
               },
             }
           );
-          if(res) {
-            setData(res.data?.data)
-            setEvent(event)
-          }
-          
-          else console.log("error");
+          if (res) {
+            setData(res.data?.data);
+            setEvent(event);
+          } else console.log("error");
         } catch (err) {
           console.log("error", err);
         }
-      }
+      };
       getRegisteredUsers();
     }
-  }
+  };
 
   const registerLogin = async (event) => {
-    console.log(process.env.REACT_APP_BACKENDURL)
+    console.log(process.env.REACT_APP_BACKENDURL);
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_BACKENDURL}api/events/register`,
@@ -58,58 +60,73 @@ function App() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     emailLogin(e.target[0].value, e.target[1].value);
-  }
+  };
 
   return (
     <div className="App">
       <div className="buttonRow">
-        <form onSubmit={handleSubmit}>
-          <label>
-          Username: 
-          <input type="email" />
-          </label>
-          <br />
-          <label>
-            Password: 
-            <input type="password" />
-          </label>
-          <label>
-            <button type="submit">Submit</button>
-          </label>
-        </form>
-      {!user && <button onClick={login}>Sign in with google</button>}
-      {user && <button onClick={logout}>Logout</button>}
-      {user && (
-        <>
-          <button onClick={() => registerLogin("singing")}>
-            register for singing event
-          </button>
-          <button onClick={() => registerLogin("dancing")}>
-            register for dancing event
-          </button>
-        </>
-      )}
-      {
-        user && <>
-          <button onClick={() => showEvent("singing")}>Show Singing Event Registrations</button>
-          <button onClick={() => showEvent("dancing")}>Show Dancing Event Registrations</button>
-        </>
-      }
+        {!user && (
+          <form onSubmit={handleSubmit}>
+            <label>
+              Email:
+              <input type="email" />
+            </label>
+            <br />
+            <label>
+              Password:
+              <input type="password" />
+            </label>
+            <label>
+              <button type="submit">Submit</button>
+            </label>
+            <a href="/reset-password">Reset Password?</a>
+          </form>
+        )}
+        {!user && <button onClick={login}>Sign in with google</button>}
+        {user && <button onClick={logout}>Logout</button>}
+        {user && (
+          <>
+            <button onClick={() => registerLogin("singing")}>
+              register for singing event
+            </button>
+            <button onClick={() => registerLogin("dancing")}>
+              register for dancing event
+            </button>
+          </>
+        )}
+        {user && (
+          <>
+            <button onClick={() => showEvent("singing")}>
+              Show Singing Event Registrations
+            </button>
+            <button onClick={() => showEvent("dancing")}>
+              Show Dancing Event Registrations
+            </button>
+          </>
+        )}
       </div>
       <div>
-        {
-          data && <>
+        {data && (
+          <>
             <h1>Registered Users For Event {event}</h1>
-            {
-              data.map((item) => <p>{item?.name}</p>)
-            }
+            {data.map((item) => (
+              <p>{item?.name}</p>
+            ))}
           </>
-        }
+        )}
       </div>
     </div>
   );
 }
 
-export default App;
+export default function AppExport() {
+  return (
+    <Routes>
+      <Route path="/" element={<App />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/user-info" element={<UserInfo />} />
+    </Routes>
+  );
+}
