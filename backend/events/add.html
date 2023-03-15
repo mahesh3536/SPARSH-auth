@@ -8,14 +8,14 @@
 </head> 
 <body>
     <h1>Add Event</h1>
-    <form action="/api/events/add" method="post">
+    <form action="/api/events/add" enctype="multipart/form-data" method="post">
         <div>
             <label for="">Name: </label>
-            <input required type="text" name="name">
+            <input required type="text" id="name" name="name">
         </div>
         <div>
             <label for="">description: </label>
-            <input required type="text" name="description">
+            <input required type="text" id="" name="description">
         </div>
         <div>
             <label for="">Date: </label>
@@ -26,16 +26,17 @@
             <input required type="venue" name="venue">
         </div>
         <div>
-            <label for="">Image URL: </label>
-            <input required type="text" name="imgurl">
+            <label id="label" for="">Image URL: </label>
+            <input required type="file" id="image" name="imgurl" onchange="uploadeImage">
         </div>
         <div>
             <label for="">Rulebook URL: </label>
-            <input required type="text" name="rulebookurl">
+            <input required type="file" name="rulebookurl">
         </div>
         <div>
             <button type="submit">Add Event</button>
         </div>
     </form>
+    <script src="./script.js" type="module" defer></script>
 </body>
 </html>

@@ -4,34 +4,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add event</title>
+    <title>Update event</title>
 </head> 
 <body>
     <h1>Update Event</h1>
     <form action="/api/events/update" method="post">
         <div>
             <label for="">Name: </label>
-            <input required type="text" name="name">
+            <input type="text" name="name">
         </div>
         <div>
             <label for="">description: </label>
-            <input required type="text" name="description">
+            <input type="text" name="description">
         </div>
         <div>
             <label for="">Date: </label>
-            <input required type="date" name="date">
+            <input type="date" name="date">
         </div>
         <div>
             <label for="">Venue: </label>
-            <input required type="venue" name="venue">
+            <input type="venue" name="venue">
         </div>
         <div>
             <label for="">Image URL: </label>
-            <input required type="text" name="imgurl">
+            <input type="text" name="imgurl">
         </div>
         <div>
             <label for="">Rulebook URL: </label>
-            <input required type="text" name="rulebookurl">
+            <input type="text" name="rulebookurl">
         </div>
         <div>
             <button type="submit">Update Event</button>

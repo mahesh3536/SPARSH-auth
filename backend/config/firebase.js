@@ -12,6 +12,17 @@ const firebaseConfig = {
   messagingSenderId: "379560169652",
   appId: "1:379560169652:web:49a9734e389498c70c07e1",
 };
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAM40dAArC96r9KKNvOzM7g2WQQqDJka10",
+//   authDomain: "fir-basics-35bef.firebaseapp.com",
+//   projectId: "fir-basics-35bef",
+//   storageBucket: "fir-basics-35bef.appspot.com",
+//   messagingSenderId: "342966114039",
+//   appId: "1:342966114039:web:8bcbdaf7ec54a729f765f2",
+//   measurementId: "G-BHZDSN09D5",
+//   storageBucket: "gs://fir-basics-35bef.appspot.com"
+// };
+
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
