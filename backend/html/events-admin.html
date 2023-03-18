@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events Admin</title>
+</head> 
+<body>
+    <form action="/api/events-admin/add-events" enctype="multipart/form-data" method="post">
+        <label>
+            Event Name:
+            <input type="text" placeholder="Enter the name of the event" />
+        </label><br />
+        <label>
+            Event Description:
+            <input type="text" placeholder="Enter the description of the event" />
+        </label><br />
+        <label>
+            Date:
+            <input type="date" placeholder="Enter date time" />
+        </label><br/>
+        <label>
+            Event Image:
+            <input type="file" accept="image/*" />
+        </label><br />
+        <label>
+            Rulebook url:
+            <input type="url" placeholder="Enter rulebook url" />
+        </label><br />
+        <label>
+            Sparsh Day:
+            <label>
+                1:
+                <input type="radio" name="event-day" />
+            </label>
+            <label>
+                2:
+                <input type="radio" name="event-day" />
+            </label>
+            <label>
+                3:
+                <input type="radio" name="event-day" />
+            </label>
+        </label><br />
+        <label>
+            Main Event
+            <input type="radio" name="event-abc" />
+        </label>
+        <label>
+            Normal Event:
+            <input type="radio" name="event-abc" />
+        </label><br/>
+        <label>
+            Number of participants:
+            <label>
+                Solo:
+                <input type="radio" name="participants" />
+            </label>
+            <label>
+                Duo:
+                <input type="radio" name="participants" />
+            </label>
+            <label>
+                Group:
+                <input type="radio" name="participants" />
+            </label>
+        </label><br />  
+        <label>
+            Categories (Enter categories in comma separated):
+            <input type="text" placeholder="Enter category" />
+        </label><br />
+        <label>
+            <input type="submit" value="Add the event"/>
+        </label>
+    </form>
+    <!-- <script src="./script.js" type="module" defer></script> -->
+</body>
+</html>

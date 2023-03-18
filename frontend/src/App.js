@@ -5,6 +5,7 @@ import axios from "axios";
 import { Route, Routes } from "react-router-dom";
 import ResetPassword from "./ResetPassword";
 import UserInfo from "./UserInfo";
+import EventsAdmin from "./EventsAdmin";
 
 function App() {
   const { user, login, emailLogin, loading, logout, resetPassword, token } =
@@ -127,6 +128,7 @@ export default function AppExport() {
       <Route path="/" element={<App />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/user-info" element={<UserInfo />} />
+      <Route path="/events-admin" element={<EventsAdmin />} />
     </Routes>
   );
 }
