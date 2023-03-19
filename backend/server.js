@@ -45,9 +45,11 @@ const events = require("./routes/events");
 const campus_ambassador = require("./routes/campus_ambassador");
 const user_info = require("./routes/user_info");
 const events_admin = require("./routes/events-admin");
+const news_post = require("./routes/news-api");
 app.use("/api/events", events);
 app.use("/api/campus_ambassador", campus_ambassador);
 app.use("/api/userinfo", user_info);
+app.use("/api/news-api", news_post);
 
 app.use("/api/events-admin", events_admin);
 
