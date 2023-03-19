@@ -1,7 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
+import { ClipLoader } from "react-spinners";
 
 function EventsAdmin() {
+  const [status, setStatus] = useState(false);
+  const [message, setMessage] = useState(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
@@ -10,11 +13,9 @@ function EventsAdmin() {
     data.append("date", e.target?.event_date.value);
     data.append("image", e.target?.event_image.files[0]);
     data.append("rulebook", e.target?.event_rulebook.value);
-    data.append("day", e.target?.event_day.value);
-    data.append("type", e.target?.event_abc.value);
+    data.append("categories", e.target?.categories.value);
     data.append("participants", e.target?.participants.value);
-    data.append("categories", e.target?.event_categories.value);
-
+    setStatus(true);
     const res = await axios.post(
       `${process.env.REACT_APP_BACKENDURL}api/events-admin/add-events`,
       data,
@@ -22,101 +23,116 @@ function EventsAdmin() {
         headers: { "content-type": "multipart/form-data" },
       }
     );
+    setStatus(false);
+    setMessage(res.data.message);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Event Name:
-        <input
-          type="text"
-          name="event_name"
-          placeholder="Enter the name of the event"
-        />
-      </label>
-      <br />
-      <label>
-        Event Description:
-        <input
-          type="text"
-          name="event_desc"
-          placeholder="Enter the description of the event"
-        />
-      </label>
-      <br />
-      <label>
-        Date:
-        <input type="date" name="event_date" placeholder="Enter date time" />
-      </label>
-      <br />
-      <label>
-        Event Image:
-        <input type="file" name="event_image" accept="image/*" />
-      </label>
-      <br />
-      <label>
-        Rulebook url:
-        <input
-          type="url"
-          name="event_rulebook"
-          placeholder="Enter rulebook url"
-        />
-      </label>
-      <br />
-      <label>
-        Sparsh Day:
-        <label>
-          1:
-          <input type="radio" value="one" name="event_day" />
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <h1>Event Add</h1>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "5px",
+          width: "500px",
+        }}
+      >
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Event Name:
+          <input
+            type="text"
+            name="event_name"
+            placeholder="Enter the name of the event"
+          />
+        </label>
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Event Description:
+          <input
+            type="text"
+            name="event_desc"
+            placeholder="Enter the description of the event"
+          />
+        </label>
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Date:
+          <input type="date" name="event_date" placeholder="Enter date time" />
         </label>
         <label>
-          2:
-          <input type="radio" value="two" name="event_day" />
+          Event Image:
+          <br />
+          <input type="file" name="event_image" accept="image/*" />
+        </label>
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Rulebook url:
+          <input
+            type="url"
+            name="event_rulebook"
+            placeholder="Enter rulebook url"
+          />
+        </label>
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Categories:
+          <select name="categories">
+            <option value={null}>--- Select Option ---</option>
+            <option value="proshows">Proshows</option>
+            <option value="design_and_digital_arts">
+              Design and dgital arts
+            </option>
+            <option value="speaking_arts">Speaking art</option>
+            <option value="school_events">School Events</option>
+            <option value="creative_thinking_and_personality">
+              Creative thinking and personality
+            </option>
+            <option value="grooming">Grooming</option>
+            <option value="singing">Singing</option>
+            <option value="dancing">Dancing</option>
+            <option value="art_of_color">Art of Color</option>
+          </select>
+        </label>
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          Number of participants:
+          <label>
+            <input type="radio" value="solo" name="participants" />
+            Solo:
+          </label>
+          <label>
+            <input type="radio" value="duo" name="participants" />
+            Duo:
+          </label>
+          <label>
+            <input type="radio" value="group" name="participants" />
+            Group:
+          </label>
         </label>
         <label>
-          3:
-          <input type="radio" value="three" name="event_day" />
+          <button style={{ width: "100%", height: "50px" }}>
+            {status ? <ClipLoader size={20} /> : "Add Event"}
+          </button>
         </label>
-      </label>
-      <br />
-      <label>
-        Main Event
-        <input type="radio" value="main" name="event_abc" />
-      </label>
-      <label>
-        Normal Event:
-        <input type="radio" value="normal" name="event_abc" />
-      </label>
-      <br />
-      <label>
-        Number of participants:
-        <label>
-          Solo:
-          <input type="radio" value="solo" name="participants" />
-        </label>
-        <label>
-          Duo:
-          <input type="radio" value="duo" name="participants" />
-        </label>
-        <label>
-          Group:
-          <input type="radio" value="group" name="participants" />
-        </label>
-      </label>
-      <br />
-      <label>
-        Categories (Enter categories in comma separated):
-        <input
-          type="text"
-          name="event_categories"
-          placeholder="Enter category"
-        />
-      </label>
-      <br />
-      <label>
-        <input type="submit" value="Add the event" />
-      </label>
-    </form>
+        {message && (
+          <h5
+            style={{
+              color: "#fff",
+              backgroundColor: "#ff0330",
+              padding: "5px",
+            }}
+          >
+            {message}
+          </h5>
+        )}
+      </form>
+    </div>
   );
 }
 
