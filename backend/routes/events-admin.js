@@ -36,8 +36,17 @@ const metadata = {
 
 router.post("/add-events", async (req, res) => {
   try {
-    const { name, description, date, rulebook, participants, categories } =
-      req.fields;
+    const {
+      name,
+      description,
+      date,
+      rulebook,
+      color,
+      participants,
+      categories,
+      googleFormSvnitian,
+      googleFormNonSvnitian,
+    } = req.fields;
     const { image } = req.files;
 
     // console.log(req.files, req.fields);
@@ -64,8 +73,11 @@ router.post("/add-events", async (req, res) => {
       description: description,
       date: date,
       imageURL: imageURL,
+      color: color,
       rulebook: rulebook,
       participants: participants,
+      googleFormSvnitian: googleFormSvnitian,
+      googleFormNonSvnitian: googleFormNonSvnitian,
     };
 
     // if (day === "one" && type === "main") {
