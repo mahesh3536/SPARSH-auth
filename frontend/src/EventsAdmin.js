@@ -13,8 +13,11 @@ function EventsAdmin() {
     data.append("date", e.target?.event_date.value);
     data.append("image", e.target?.event_image.files[0]);
     data.append("rulebook", e.target?.event_rulebook.value);
+    data.append("color", e.target?.color.value);
     data.append("categories", e.target?.categories.value);
     data.append("participants", e.target?.participants.value);
+    data.append("googleFormSvnitian", e.target?.categories.value);
+    data.append("googleFormNonSvnitian", e.target?.participants.value);
     setStatus(true);
     const res = await axios.post(
       `${process.env.REACT_APP_BACKENDURL}api/events-admin/add-events`,
@@ -82,6 +85,10 @@ function EventsAdmin() {
           />
         </label>
         <label style={{ display: "flex", flexDirection: "column" }}>
+          Color:
+          <input type="text" name="color" placeholder="Enter Color" />
+        </label>
+        <label style={{ display: "flex", flexDirection: "column" }}>
           Categories:
           <select name="categories">
             <option value={null}>--- Select Option ---</option>
@@ -99,6 +106,22 @@ function EventsAdmin() {
             <option value="dancing">Dancing</option>
             <option value="art_of_color">Art of Color</option>
           </select>
+        </label>
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          googleFormSvnitian:
+          <input
+            type="text"
+            name="googleFormSvnitian"
+            placeholder="Enter googleFormSvnitian"
+          />
+        </label>
+        <label style={{ display: "flex", flexDirection: "column" }}>
+          googleFormNonSvnitian:
+          <input
+            type="text"
+            name="googleFormNonSvnitian"
+            placeholder="Enter googleFormNonSvnitian"
+          />
         </label>
         <label style={{ display: "flex", flexDirection: "column" }}>
           Number of participants:
