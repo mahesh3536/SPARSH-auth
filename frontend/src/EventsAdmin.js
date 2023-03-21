@@ -26,6 +26,9 @@ function EventsAdmin() {
         headers: { "content-type": "multipart/form-data" },
       }
     );
+    console.log(
+      `${process.env.REACT_APP_BACKENDURL}api/events-admin/add-events`
+    );
     setStatus(false);
     setMessage(res.data.message);
   };

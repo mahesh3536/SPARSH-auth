@@ -49,7 +49,7 @@ router.post("/add-events", async (req, res) => {
     } = req.fields;
     const { image } = req.files;
 
-    // console.log(req.files, req.fields);
+    console.log(req.files, req.fields);
 
     const imageUpload = async (folder, buffer) => {
       return new Promise((resolve, reject) => {
@@ -75,7 +75,7 @@ router.post("/add-events", async (req, res) => {
       imageURL: imageURL,
       color: color,
       rulebook: rulebook,
-      participants: participants,
+      // participants: participants,
       googleFormSvnitian: googleFormSvnitian,
       googleFormNonSvnitian: googleFormNonSvnitian,
     };
@@ -106,7 +106,7 @@ router.post("/add-events", async (req, res) => {
     return res.status(200).json({ message: "Successfully Added" });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error", err: err });
   }
 });
 
